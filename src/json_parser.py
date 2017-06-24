@@ -1,4 +1,5 @@
 from utils import log, ensure
+import json
 
 
 def numbered_element(s):
@@ -46,6 +47,43 @@ def tokenizer(s):
     return formatted_tokens(l)
 
 
+def parse_obj(l):
+    r = {}
+    l.pop(0)
+    while l[0] != '}':
+        k, d, v = l.pop(0), l.pop(0), parser(l)
+        r.update({
+            k: v,
+        })
+        if l[0] == ',':
+            l.pop(0)
+    l.pop(0)
+    return r
+
+
+def parse_array(l):
+    r = []
+    l.pop(0)
+    while l[0] != ']':
+        ele = parser(l)  # ,
+        if l[0] == ',':
+            l.pop(0)
+        r.append(ele)
+    l.pop(0)
+    return r
+
+
+def parser(l):
+    if l[0] == '{':
+        # object
+        return parse_obj(l)
+    elif l[0] == '[':
+        # array
+        return parse_array(l)
+    else:
+        return l.pop(0)
+
+
 def test_tokenizer():
     s1 = '''{
     "employees": [
@@ -57,9 +95,23 @@ def test_tokenizer():
     log(tokenizer(s1))
 
 
-def test():
-    test_tokenizer()
+def test_parser():
+    s1 = '''{
+        "employees": [
+        { "firstName":-12.34 , "lastName":null },
+        { "firstName":true , "lastName":["Smith\\"", 123] }
+        ]
+        }'''
+    l = tokenizer(s1)
+    obj = parser(l)
+    log(s1)
+    log(obj, type(obj))
+    log(json.loads(s1), 'json loads')
 
+
+def test():
+    # test_tokenizer()
+    test_parser()
 
 if __name__ == '__main__':
     test()
