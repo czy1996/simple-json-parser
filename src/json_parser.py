@@ -14,7 +14,7 @@ def formatted_element(s):
     # 数字转换为数字，null 转换为 None， bool 转换为 python 对应类型，字符串去掉双引号
     num = '-0123456789'
     if s[0] == '"':
-        return s[1:-1]
+        return s.rstrip(' ')[1:-1]  # 去除补齐的空格
     elif s == 'null':
         return None
     elif s == 'true':
@@ -22,7 +22,6 @@ def formatted_element(s):
     elif s == 'false':
         return False
     elif s[0] in num:
-        log(s)
         return numbered_element(s)
     else:
         return s  # {} [] : ,
@@ -46,19 +45,50 @@ def formatted_tokens(l):
 #     l = s.split()
 #     log(l)
 #     return formatted_tokens(l)
+def escaped_char(s):
+    """
+    | \"
+     | \\
+     | \/
+     | \b
+     | \f
+     | \n
+     | \r
+     | \t
+     |  four-hex-digits
+    """
+    escape = {
+        '\\"': '"',
+        '\\\\': '\\',
+        '\\/': '/',
+        '\\b': '\b',
+        '\\f': '\f',
+        '\\n': '\n',
+        '\\r': '\r',
+        '\\t': '\t',
+        # '\\u': '\u',
+    }
+    # log(escape.get(s), s, '')
+    return escape.get(s) + ' '  # 处理转义字符后字符串长度 - 1，外层函数需要该长度用来跳过处理的字符串
+
 
 def string_element(s):
     r = '"'
     ec = False
+    ecs = 0
     for i, e in enumerate(s[1:]):
-        r += e
-        if ec is True:
+        if ec:
             ec = False
         elif e == '\\':
             ec = True
+            ecs += 1
+            r += escaped_char(s[i + 1:i + 3])[:-1]  # 去除空格
         elif e == '"':
+            r += e
             break
-    return r
+        else:
+            r += e
+    return r + ' ' * ecs  # 空格移到最右
 
 
 def common_element(s):
@@ -469,6 +499,7 @@ def test_tree():
     slist.append(s2)
     slist.append(s3)
     for i, s in enumerate(slist):
+        # log(tokenizer(s))
         ensure(json.loads(s) == tree(s), '*** {}'.format(str(i)))
         log(tree(s), 'tree')
         log(json.loads(s), 'jsonloads')
