@@ -1,6 +1,11 @@
 # simple-json-parser
 用来学习的简易的 JSON 解析器，慢慢填
 
+目前已支持
+- 处理各种数据格式，NUMBER STRING BOOL 均可转换为 python 对应的对象
+- 处理嵌套的数据结构 Object Array
+- 处理转义，出 unicode 外效果与 json.loads一致
+
 ## 测试效果
 ![](测试效果.jpg)
 
