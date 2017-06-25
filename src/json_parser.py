@@ -68,7 +68,6 @@ def escaped_char(s):
         '\\t': '\t',
         # '\\u': '\u',
     }
-    # log(escape.get(s), s, '')
     return escape.get(s) + ' '  # 处理转义字符后字符串长度 - 1，外层函数需要该长度用来跳过处理的字符串
 
 
@@ -164,23 +163,23 @@ def tree(s):
 
 
 def test_tokenizer():
-    s1 = '''{
+    s1 = """{
     "employees": [
     { "firstName":-12.34 , "lastName":null },
     { "firstName":true , "lastName":["Smith\\"", 123] }
     ]
-    }'''
+    }"""
     log(s1)
     log(tokenizer(s1))
 
 
 def test_parser():
-    s1 = '''{
+    s1 = """{
         "employees": [
         { "firstName":-12.34 , "lastName":null },
         { "firstName":true , "lastName":["Smith\\"", 123] }
         ]
-        }'''
+        }"""
     l = tokenizer(s1)
     obj = parser(l)
     log(s1)
@@ -205,13 +204,13 @@ def test_parser():
 
 def test_tree():
     slist = []
-    s1 = '''{
+    s1 = """{
     "employees": [
     { "firstName":-12.34 , "lastName":null },
     { "firstName":true , "lastName":["Smith\\"", 123] }
     ]
-    }'''
-    s2 = '''{
+    }"""
+    s2 = """{
        "achievement" : [ "ach1", "ach2", "ach3" ],
        "age" : 23,
        "name" : "Tsybius",
@@ -221,7 +220,7 @@ def test_tree():
           "partner_sex_is_male" : false
        },
        "sex_is_male" : true
-    }'''
+    }"""
     s3 = """[
   {
     "_id": "594e5c7e8db3214973779d1c",
@@ -503,6 +502,7 @@ def test_tree():
         ensure(json.loads(s) == tree(s), '*** {}'.format(str(i)))
         log(tree(s), 'tree')
         log(json.loads(s), 'jsonloads')
+
 
 def test():
     # test_tokenizer()
